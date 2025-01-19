@@ -7,7 +7,7 @@ import (
 
 const errorNil = "value is nil"
 const errorType = "cannot convert value to type"
-const errorOverflow = "value is out of range for "
+const errorOverflow = "value is out of range for"
 
 func nilErr() error {
 	return fmt.Errorf(errorNil)
