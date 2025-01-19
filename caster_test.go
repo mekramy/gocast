@@ -7,6 +7,48 @@ import (
 	"github.com/mekramy/gocast"
 )
 
+func TestOverflowChecks(t *testing.T) {
+	tests := []struct {
+		input    interface{}
+		expected interface{}
+		err      bool
+	}{
+		{int64(9223372036854775807), int32(0), true},         // int64 to int32 overflow
+		{int64(-9223372036854775808), int32(0), true},        // int64 to int32 underflow
+		{uint64(18446744073709551615), uint32(0), true},      // uint64 to uint32 overflow
+		{float64(1.7976931348623157e+308), float32(0), true}, // float64 to float32 overflow
+	}
+
+	for _, test := range tests {
+		switch test.expected.(type) {
+		case int32:
+			result, err := gocast.ToSigned[int32](test.input)
+			if (err != nil) != test.err {
+				t.Errorf("ToSigned[int32](%v) error = %v, expected error = %v", test.input, err, test.err)
+			}
+			if result != test.expected {
+				t.Errorf("ToSigned[int32](%v) = %v, expected %v", test.input, result, test.expected)
+			}
+		case uint32:
+			result, err := gocast.ToUnsigned[uint32](test.input)
+			if (err != nil) != test.err {
+				t.Errorf("ToUnsigned[uint32](%v) error = %v, expected error = %v", test.input, err, test.err)
+			}
+			if result != test.expected {
+				t.Errorf("ToUnsigned[uint32](%v) = %v, expected %v", test.input, result, test.expected)
+			}
+		case float32:
+			result, err := gocast.ToFloat[float32](test.input)
+			if (err != nil) != test.err {
+				t.Errorf("ToFloat[float32](%v) error = %v, expected error = %v", test.input, err, test.err)
+			}
+			if result != test.expected {
+				t.Errorf("ToFloat[float32](%v) = %v, expected %v", test.input, result, test.expected)
+			}
+		}
+	}
+}
+
 func TestToBool(t *testing.T) {
 	tests := []struct {
 		input    interface{}
@@ -42,20 +84,20 @@ func TestToBool(t *testing.T) {
 func TestToSigned(t *testing.T) {
 	tests := []struct {
 		input    interface{}
-		expected int
+		expected int32
 		err      bool
 	}{
 		{true, 1, false},
 		{false, 0, false},
 		{1, 1, false},
-		{0, 0, false},
 		{"123", 123, false},
+		{36124544328881238, 0, true},
 		{"invalid", 0, true},
 		{nil, 0, true},
 	}
 
 	for _, test := range tests {
-		result, err := gocast.ToSigned[int](test.input)
+		result, err := gocast.ToSigned[int32](test.input)
 		if test.err && err != nil {
 			continue
 		}

@@ -61,6 +61,7 @@ func ToBool(value interface{}) (bool, error) {
 func ToSigned[T int | int8 | int16 | int32 | int64](value interface{}) (T, error) {
 	value = valueOf(value)
 	msg := typeError(typeName[T]())
+	ove := overflowError(typeName[T]())
 
 	// Check provider
 	if isImplementsOf[T, int]() {
@@ -115,49 +116,105 @@ func ToSigned[T int | int8 | int16 | int32 | int64](value interface{}) (T, error
 		}
 		return 0, nil
 	case int:
-		return T(val), nil
+		if !intInRange[T](int64(val)) {
+			return 0, ove
+		} else {
+			return T(val), nil
+		}
 	case int8:
-		return T(val), nil
+		if !intInRange[T](int64(val)) {
+			return 0, ove
+		} else {
+			return T(val), nil
+		}
 	case int16:
-		return T(val), nil
+		if !intInRange[T](int64(val)) {
+			return 0, ove
+		} else {
+			return T(val), nil
+		}
 	case int32:
-		return T(val), nil
+		if !intInRange[T](int64(val)) {
+			return 0, ove
+		} else {
+			return T(val), nil
+		}
 	case int64:
-		return T(val), nil
+		if !intInRange[T](int64(val)) {
+			return 0, ove
+		} else {
+			return T(val), nil
+		}
 	case uint:
-		return T(val), nil
+		if !intInRange[T](int64(val)) {
+			return 0, ove
+		} else {
+			return T(val), nil
+		}
 	case uint8:
-		return T(val), nil
+		if !intInRange[T](int64(val)) {
+			return 0, ove
+		} else {
+			return T(val), nil
+		}
 	case uint16:
-		return T(val), nil
+		if !intInRange[T](int64(val)) {
+			return 0, ove
+		} else {
+			return T(val), nil
+		}
 	case uint32:
-		return T(val), nil
+		if !intInRange[T](int64(val)) {
+			return 0, ove
+		} else {
+			return T(val), nil
+		}
 	case uint64:
-		return T(val), nil
+		if !intInRange[T](int64(val)) {
+			return 0, ove
+		} else {
+			return T(val), nil
+		}
 	case float32:
-		return T(val), nil
+		if !intInRange[T](int64(val)) {
+			return 0, ove
+		} else {
+			return T(val), nil
+		}
 	case float64:
-		return T(val), nil
+		if !intInRange[T](int64(val)) {
+			return 0, ove
+		} else {
+			return T(val), nil
+		}
 	case string:
 		i, err := strconv.ParseInt(val, 0, 0)
-		if err == nil {
+		if !intInRange[T](int64(i)) {
+			return 0, ove
+		} else if err == nil {
 			return T(i), nil
 		}
 
 		f, err := strconv.ParseFloat(val, 64)
-		if err == nil {
+		if !intInRange[T](int64(f)) {
+			return 0, ove
+		} else if err == nil {
 			return T(f), nil
 		}
 
 		return 0, msg
 	default:
 		i, err := strconv.ParseInt(fmt.Sprintf("%v", val), 0, 0)
-		if err == nil {
+		if !intInRange[T](int64(i)) {
+			return 0, ove
+		} else if err == nil {
 			return T(i), nil
 		}
 
 		f, err := strconv.ParseFloat(fmt.Sprintf("%v", val), 64)
-		if err == nil {
+		if !intInRange[T](int64(f)) {
+			return 0, ove
+		} else if err == nil {
 			return T(f), nil
 		}
 
@@ -169,6 +226,7 @@ func ToSigned[T int | int8 | int16 | int32 | int64](value interface{}) (T, error
 func ToUnsigned[T uint | uint8 | uint16 | uint32 | uint64](value interface{}) (T, error) {
 	value = valueOf(value)
 	msg := typeError(typeName[T]())
+	ove := overflowError(typeName[T]())
 
 	// Check provider
 	if isImplementsOf[T, uint]() {
@@ -223,61 +281,88 @@ func ToUnsigned[T uint | uint8 | uint16 | uint32 | uint64](value interface{}) (T
 		}
 		return 0, nil
 	case int:
-		if val < 0 {
-			return 0, msg
+		if !uintInRange[T](int64(val), uint64(val)) {
+			return 0, ove
+		} else {
+			return T(val), nil
 		}
-		return T(val), nil
 	case int8:
-		if val < 0 {
-			return 0, msg
+		if !uintInRange[T](int64(val), uint64(val)) {
+			return 0, ove
+		} else {
+			return T(val), nil
 		}
-		return T(val), nil
 	case int16:
-		if val < 0 {
-			return 0, msg
+		if !uintInRange[T](int64(val), uint64(val)) {
+			return 0, ove
+		} else {
+			return T(val), nil
 		}
-		return T(val), nil
 	case int32:
-		if val < 0 {
-			return 0, msg
+		if !uintInRange[T](int64(val), uint64(val)) {
+			return 0, ove
+		} else {
+			return T(val), nil
 		}
-		return T(val), nil
 	case int64:
-		if val < 0 {
-			return 0, msg
+		if !uintInRange[T](int64(val), uint64(val)) {
+			return 0, ove
+		} else {
+			return T(val), nil
 		}
-		return T(val), nil
 	case uint:
-		return T(val), nil
+		if !uintInRange[T](int64(val), uint64(val)) {
+			return 0, ove
+		} else {
+			return T(val), nil
+		}
 	case uint8:
-		return T(val), nil
+		if !uintInRange[T](int64(val), uint64(val)) {
+			return 0, ove
+		} else {
+			return T(val), nil
+		}
 	case uint16:
-		return T(val), nil
+		if !uintInRange[T](int64(val), uint64(val)) {
+			return 0, ove
+		} else {
+			return T(val), nil
+		}
 	case uint32:
-		return T(val), nil
+		if !uintInRange[T](int64(val), uint64(val)) {
+			return 0, ove
+		} else {
+			return T(val), nil
+		}
 	case uint64:
-		return T(val), nil
+		if !uintInRange[T](int64(val), uint64(val)) {
+			return 0, ove
+		} else {
+			return T(val), nil
+		}
 	case float32:
-		if val < 0 {
-			return 0, msg
+		if !uintInRange[T](int64(val), uint64(val)) {
+			return 0, ove
+		} else {
+			return T(val), nil
 		}
-		return T(val), nil
 	case float64:
-		if val < 0 {
-			return 0, msg
+		if !uintInRange[T](int64(val), uint64(val)) {
+			return 0, ove
+		} else {
+			return T(val), nil
 		}
-		return T(val), nil
 	case string:
 		i, err := strconv.ParseInt(val, 0, 0)
-		if i < 0 {
-			return 0, msg
+		if !uintInRange[T](int64(i), uint64(i)) {
+			return 0, ove
 		} else if err == nil {
 			return T(i), nil
 		}
 
 		f, err := strconv.ParseFloat(val, 64)
-		if f < 0 {
-			return 0, msg
+		if !uintInRange[T](int64(f), uint64(f)) {
+			return 0, ove
 		} else if err == nil {
 			return T(f), nil
 		}
@@ -285,15 +370,15 @@ func ToUnsigned[T uint | uint8 | uint16 | uint32 | uint64](value interface{}) (T
 		return 0, msg
 	default:
 		i, err := strconv.ParseInt(fmt.Sprintf("%v", val), 0, 0)
-		if i < 0 {
-			return 0, msg
+		if !uintInRange[T](int64(i), uint64(i)) {
+			return 0, ove
 		} else if err == nil {
 			return T(i), nil
 		}
 
 		f, err := strconv.ParseFloat(fmt.Sprintf("%v", val), 64)
-		if f < 0 {
-			return 0, msg
+		if !uintInRange[T](int64(f), uint64(f)) {
+			return 0, ove
 		} else if err == nil {
 			return T(f), nil
 		}
@@ -306,6 +391,7 @@ func ToUnsigned[T uint | uint8 | uint16 | uint32 | uint64](value interface{}) (T
 func ToFloat[T float32 | float64](value interface{}) (T, error) {
 	value = valueOf(value)
 	msg := typeError(typeName[T]())
+	rng := typeError(typeName[T]())
 
 	// Check provider
 	if isImplementsOf[T, float32]() {
@@ -336,49 +422,105 @@ func ToFloat[T float32 | float64](value interface{}) (T, error) {
 		}
 		return 0, nil
 	case int:
-		return T(val), nil
+		if !floatInRange[T](float64(val)) {
+			return 0, rng
+		} else {
+			return T(val), nil
+		}
 	case int8:
-		return T(val), nil
+		if !floatInRange[T](float64(val)) {
+			return 0, rng
+		} else {
+			return T(val), nil
+		}
 	case int16:
-		return T(val), nil
+		if !floatInRange[T](float64(val)) {
+			return 0, rng
+		} else {
+			return T(val), nil
+		}
 	case int32:
-		return T(val), nil
+		if !floatInRange[T](float64(val)) {
+			return 0, rng
+		} else {
+			return T(val), nil
+		}
 	case int64:
-		return T(val), nil
+		if !floatInRange[T](float64(val)) {
+			return 0, rng
+		} else {
+			return T(val), nil
+		}
 	case uint:
-		return T(val), nil
+		if !floatInRange[T](float64(val)) {
+			return 0, rng
+		} else {
+			return T(val), nil
+		}
 	case uint8:
-		return T(val), nil
+		if !floatInRange[T](float64(val)) {
+			return 0, rng
+		} else {
+			return T(val), nil
+		}
 	case uint16:
-		return T(val), nil
+		if !floatInRange[T](float64(val)) {
+			return 0, rng
+		} else {
+			return T(val), nil
+		}
 	case uint32:
-		return T(val), nil
+		if !floatInRange[T](float64(val)) {
+			return 0, rng
+		} else {
+			return T(val), nil
+		}
 	case uint64:
-		return T(val), nil
+		if !floatInRange[T](float64(val)) {
+			return 0, rng
+		} else {
+			return T(val), nil
+		}
 	case float32:
-		return T(val), nil
+		if !floatInRange[T](float64(val)) {
+			return 0, rng
+		} else {
+			return T(val), nil
+		}
 	case float64:
-		return T(val), nil
+		if !floatInRange[T](float64(val)) {
+			return 0, rng
+		} else {
+			return T(val), nil
+		}
 	case string:
 		f, err := strconv.ParseFloat(val, 64)
-		if err == nil {
+		if !floatInRange[T](float64(f)) {
+			return 0, rng
+		} else if err == nil {
 			return T(f), nil
 		}
 
 		i, err := strconv.ParseInt(val, 0, 0)
-		if err == nil {
+		if !floatInRange[T](float64(i)) {
+			return 0, rng
+		} else if err == nil {
 			return T(i), nil
 		}
 
 		return 0, msg
 	default:
 		f, err := strconv.ParseFloat(fmt.Sprintf("%v", val), 64)
-		if err == nil {
+		if !floatInRange[T](float64(f)) {
+			return 0, rng
+		} else if err == nil {
 			return T(f), nil
 		}
 
 		i, err := strconv.ParseInt(fmt.Sprintf("%v", val), 0, 0)
-		if err == nil {
+		if !floatInRange[T](float64(i)) {
+			return 0, rng
+		} else if err == nil {
 			return T(i), nil
 		}
 

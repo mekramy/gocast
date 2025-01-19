@@ -250,6 +250,12 @@ Checks if the provided error is a nil error. Returns true if the error is not ni
 
 Checks if the provided error is a casting error. Returns true if the error is not nil and is a casting error.
 
+### IsOverflowError
+
+`func IsOverflowError(err error) bool`
+
+Checks if the provided error is a overflow error. Returns true if the error is not nil and is a overflow error.
+
 ### Providers
 
 The library also defines several provider interfaces for different types and slices. These interfaces provide methods to converting custom types like standard go `Stringer` interface.

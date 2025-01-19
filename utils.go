@@ -4,6 +4,7 @@ package gocast
 
 import (
 	"fmt"
+	"math"
 	"reflect"
 )
 
@@ -12,13 +13,6 @@ import (
 // is not a pointer or is nil, it returns the input itself. This function
 // is useful for obtaining the underlying value of a pointer, regardless
 // of how many levels of pointers there are.
-//
-// Parameters:
-// - value: The input interface{} which may be a pointer or a value.
-//
-// Returns:
-//   - The underlying value that the input points to, or the input itself
-//     if it is not a pointer or is nil.
 func valueOf(value any) any {
 	// nil check
 	if value == nil {
@@ -70,13 +64,6 @@ func stringOf(value any) any {
 // This function is a generic utility that determines whether a type T
 // implements an interface I at compile time. It can be useful for
 // compile-time assertions and type checking.
-//
-// Type Parameters:
-// - T: The type that is being checked for implementation of the interface I.
-// - I: The interface that is being checked against the type T.
-//
-// Returns:
-// - bool: True if T implements I, otherwise false.
 func isImplementsOf[T any, I any]() bool {
 	var o T
 	_, ok := interface{}(o).(I)
@@ -88,13 +75,68 @@ func isImplementsOf[T any, I any]() bool {
 // This function uses reflection to obtain the name of the type T. It is
 // useful for debugging, logging, or any situation where you need to
 // programmatically obtain the name of a type.
-//
-// Type Parameters:
-// - T: The type whose name is to be obtained.
-//
-// Returns:
-// - string: The name of the type T.
 func typeName[T any]() string {
 	var o T
 	return reflect.TypeOf(o).String()
+}
+
+// intInRange checks if a given int64 value falls within the range of a specified integer type T.
+//
+// This function is useful for determining whether a value can be safely
+// converted to a different integer type without overflow or underflow.
+func intInRange[T int | int8 | int16 | int32 | int64](value int64) bool {
+	var sample T
+	switch any(sample).(type) {
+	case int:
+		return value >= math.MinInt && value <= math.MaxInt
+	case int8:
+		return value >= math.MinInt8 && value <= math.MaxInt8
+	case int16:
+		return value >= math.MinInt16 && value <= math.MaxInt16
+	case int32:
+		return value >= math.MinInt32 && value <= math.MaxInt32
+	case int64:
+		return value >= math.MinInt64 && value <= math.MaxInt64
+	default:
+		return false
+	}
+}
+
+// uintInRange checks if a given uint64 value falls within the range of a specified unsigned integer type T.
+//
+// This function is useful for determining whether a value can be safely
+// converted to a different unsigned integer type without overflow.
+func uintInRange[T uint | uint8 | uint16 | uint32 | uint64](original int64, value uint64) bool {
+	if original > 0 {
+		var sample T
+		switch any(sample).(type) {
+		case uint:
+			return value <= math.MaxUint
+		case uint8:
+			return value <= math.MaxUint8
+		case uint16:
+			return value <= math.MaxUint16
+		case uint32:
+			return value <= math.MaxUint32
+		case uint64:
+			return value <= math.MaxUint64
+		}
+	}
+	return false
+}
+
+// floatInRange checks if a given float64 value falls within the range of a specified floating-point type T.
+//
+// This function is useful for determining whether a value can be safely
+// converted to a different floating-point type without overflow.
+func floatInRange[T float32 | float64](v float64) bool {
+	var sample T
+	switch any(sample).(type) {
+	case float32:
+		return v >= -math.MaxFloat32 && v <= math.MaxFloat32
+	case float64:
+		return v >= -math.MaxFloat64 && v <= math.MaxFloat64
+	default:
+		return false
+	}
 }
