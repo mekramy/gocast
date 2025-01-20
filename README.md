@@ -112,7 +112,7 @@ func main() {
     if err != nil {
         fmt.Println("Error:", err)
     } else {
-        fmt.Println("Int value:", intValue) // output: 123
+        fmt.Println("Int value:", intValue) // output: -123
     }
 
     // Example of ToString
